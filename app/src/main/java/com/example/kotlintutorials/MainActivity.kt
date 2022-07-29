@@ -2,59 +2,69 @@ package com.example.kotlintutorials
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
-import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.kotlintutorials.databinding.ActivityMainBinding
-import com.example.kotlintutorials.db.Subscriber
-import com.example.kotlintutorials.db.SubscriberDatabase
-import com.example.kotlintutorials.db.SubscriberRepository
+import androidx.lifecycle.liveData
+import kotlinx.android.synthetic.main.activity_main.*
+import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityMainBinding
-    private lateinit var subscriberViewModel: SubscriberViewModel
-    private lateinit var adapter: RecyclerViewAdapter
+    private lateinit var retService: AlbumService
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
 
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        val dao = SubscriberDatabase.getInstance(application).subscriberDAO
-        val repository = SubscriberRepository(dao)
-        val factory = SubscriberViewModelFactory(repository)
-        subscriberViewModel = ViewModelProvider(this, factory).get(SubscriberViewModel::class.java)
-        binding.myViewModel = subscriberViewModel
-        binding.lifecycleOwner = this
-        initRecyclerView()
+        retService = RetrofitInstance.getRetrofitInstance().create(AlbumService::class.java)
 
-        subscriberViewModel.message.observe(this, Observer {
-            it.getContentIfNotHandled()?.let {
-                Toast.makeText(this, it, Toast.LENGTH_LONG).show()
+        //getRequestWithPathParameters()
+        //getRequestWithQueryParameters()
+        uploadAlbum()
+
+
+    }
+
+    private fun getRequestWithQueryParameters() {
+        val responseLiveData: LiveData<Response<Album>> = liveData {
+            val response = retService.getSortedAlbums(3)
+            emit(response)
+        }
+        responseLiveData.observe(this, Observer {
+            val albumsList = it.body()?.listIterator()
+            if (albumsList != null) {
+                while (albumsList.hasNext()) {
+                    val albumItem = albumsList.next()
+                    val result = "" + "Album Title: ${albumItem.title}" + "\n" + "" + "Album id: ${albumItem.id}" + "\n" + "" + "User id: ${albumItem.userId}" + "\n\n\n\n\n"
+                    tvMainActivity.append(result)
+                }
             }
         })
     }
 
-    private fun displaySubscribersList() {
-        subscriberViewModel.subscribers.observe(this, Observer {
-            adapter.setList(it)
-            adapter.notifyDataSetChanged()
+    private fun getRequestWithPathParameters() {
+        val pathResponse: LiveData<Response<AlbumItem>> = liveData {
+            val response = retService.getAlbum(3)
+            emit(response)
+        }
+        pathResponse.observe(this, Observer {
+            val title = it.body()?.title
+            Toast.makeText(applicationContext, title, Toast.LENGTH_LONG).show()
         })
     }
 
-    private fun initRecyclerView() {
-        binding.rvSubscriber.layoutManager = LinearLayoutManager(this)
-        adapter = RecyclerViewAdapter() { selectedItem: Subscriber -> listItemClicked(selectedItem) }
-        binding.rvSubscriber.adapter = adapter
-        displaySubscribersList()
-    }
-
-    private fun listItemClicked(subscriber: Subscriber) {
-        //Toast.makeText(this, "selected name is ${subscriber.name}", Toast.LENGTH_LONG).show()
-        subscriberViewModel.initUpdateAndDelete(subscriber)
+    private fun uploadAlbum(){
+        val album = AlbumItem(0,"My title",3)
+        val postResponse:LiveData<Response<AlbumItem>> = liveData {
+            val response = retService.uploadAlbum(album)
+            emit(response)
+        }
+        postResponse.observe(this, Observer {
+            val receivedAlbumsItem = it.body()
+            val result = "" + "Album Title: ${receivedAlbumsItem?.title}" + "\n" + "" + "Album id: ${receivedAlbumsItem?.id}" + "\n" + "" + "User id: ${receivedAlbumsItem?.userId}" + "\n\n\n\n\n"
+            tvMainActivity.text=result
+        })
     }
 }

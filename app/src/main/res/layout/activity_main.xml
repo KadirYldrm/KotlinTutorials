@@ -1,84 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
 
-    <data>
+    <ScrollView
+        android:id="@+id/scrollView2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="1dp"
+        android:layout_marginBottom="1dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <variable
-            name="myViewModel"
-            type="com.example.kotlintutorials.SubscriberViewModel" />
-    </data>
-
-    <androidx.appcompat.widget.LinearLayoutCompat
-
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="@dimen/dimen_15_dp"
-        android:orientation="vertical"
-        tools:context=".MainActivity">
-
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/etName"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/tvMainActivity"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dimen_15_dp"
-            android:layout_marginTop="@dimen/dimen_15_dp"
-            android:layout_marginRight="@dimen/dimen_15_dp"
-            android:layout_marginBottom="5dp"
-            android:ems="10"
-            android:hint="@string/subscriber_s_name"
-            android:inputType="textPersonName"
-            android:text="@={myViewModel.inputName}"
-            android:textSize="@dimen/dimen_18_sp"
-            android:textStyle="bold" />
+            android:layout_marginBottom="356dp"
+            android:text="hello"
+            />
 
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/etEmail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dimen_15_dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginRight="@dimen/dimen_15_dp"
-            android:layout_marginBottom="5dp"
-            android:ems="10"
-            android:hint="@string/subscriber_s_email"
-            android:inputType="textEmailAddress"
-            android:text="@={myViewModel.inputEmail}"
-            android:textSize="@dimen/dimen_18_sp"
-            android:textStyle="bold" />
-
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_15_dp"
-            android:orientation="horizontal">
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnSave"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="@{()->myViewModel.saveOrUpdate()}"
-                android:text="@={myViewModel.saveOrUpdateButtonText}"
-                android:textSize="@dimen/dimen_18_sp"
-                android:textStyle="bold" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnDelete"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dimen_15_dp"
-                android:onClick="@{()->myViewModel.clearAllOrDelete()}"
-                android:text="@={myViewModel.clearAllOrDeleteButtonText}"
-                android:textSize="@dimen/dimen_18_sp"
-                android:textStyle="bold" />
-
-
-        </androidx.appcompat.widget.LinearLayoutCompat>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvSubscriber"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dimen_15_dp" />
-    </androidx.appcompat.widget.LinearLayoutCompat>
-</layout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
